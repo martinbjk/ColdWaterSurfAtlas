@@ -1,0 +1,735 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Kalla vatten — Ett surfatlas över Sverige och Danmarks västkust</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#10181F;
+    --paper:#F1EEE6;
+    --paper-2:#E8E3D6;
+    --steel:#233240;
+    --steel-2:#2E4356;
+    --slate:#7C93A6;
+    --signal:#C6491E;
+    --line:#C7BFAE;
+    --line-dark:#3C4E5E;
+    box-sizing:border-box;
+    padding-top:env(safe-area-inset-top,0px);
+    padding-bottom:env(safe-area-inset-bottom,0px);
+  }
+  html{scroll-padding-top:env(safe-area-inset-top,0px);}
+  *{box-sizing:inherit;}
+  html,body{margin:0;padding:0;background:var(--paper);color:var(--ink);}
+  body{
+    font-family:'IBM Plex Sans',sans-serif;
+    font-size:17px;
+    line-height:1.65;
+    -webkit-font-smoothing:antialiased;
+  }
+  h1,h2,h3{
+    font-family:'Fraunces',serif;
+    font-weight:600;
+    line-height:1.1;
+    margin:0 0 .4em 0;
+  }
+  a{color:var(--signal);}
+  .wrap{max-width:720px;margin:0 auto;padding:0 24px;}
+
+  /* HERO */
+  .hero{
+    background:var(--ink);
+    color:var(--paper);
+    padding:88px 24px 64px;
+    position:relative;
+    overflow:hidden;
+  }
+  .hero::before{
+    content:"";
+    position:absolute;
+    right:-120px; top:-120px;
+    width:420px;height:420px;
+    border-radius:50%;
+    background:radial-gradient(circle at 30% 30%, rgba(124,147,166,.35), transparent 70%);
+  }
+  .hero .eyebrow{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:14px;
+    color:var(--slate);
+    letter-spacing:.02em;
+    margin-bottom:18px;
+  }
+  .hero h1{
+    font-size:clamp(2.1rem,6vw,3.2rem);
+    max-width:11ch;
+    color:var(--paper);
+  }
+  .hero p.lede{
+    max-width:44ch;
+    font-size:1.15rem;
+    color:#C9D3DA;
+    margin-top:18px;
+  }
+  .hero .meta{
+    margin-top:36px;
+    font-family:'IBM Plex Mono',monospace;
+    font-size:13px;
+    color:var(--slate);
+    border-top:1px solid var(--line-dark);
+    padding-top:16px;
+    display:flex;
+    gap:24px;
+    flex-wrap:wrap;
+  }
+
+  /* INTRO */
+  .intro{padding:56px 0 8px;}
+  .intro p{font-size:1.08rem;}
+  .intro .drop{
+    font-family:'Fraunces',serif;
+    font-size:3.4em;
+    float:left;
+    line-height:.8;
+    padding:.06em .08em 0 0;
+    color:var(--signal);
+  }
+
+  /* CHAPTER HEADER */
+  .chapter{padding:56px 0 8px;}
+  .chapter-head{
+    border-top:2px solid var(--ink);
+    padding-top:14px;
+    margin-bottom:28px;
+    display:flex;
+    justify-content:space-between;
+    align-items:baseline;
+    gap:16px;
+    flex-wrap:wrap;
+  }
+  .chapter-head .range{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:13px;
+    color:var(--slate);
+    white-space:nowrap;
+  }
+  .chapter h2{font-size:clamp(1.5rem,4.5vw,2rem);}
+  .chapter .dek{color:#4B5A66;font-size:1.02rem;margin-bottom:22px;max-width:56ch;}
+
+  .spot{
+    margin:26px 0;
+    padding-left:18px;
+    border-left:3px solid var(--paper-2);
+  }
+  .spot.confirmed{border-left-color:var(--signal);}
+  .spot.approx{border-left-color:var(--slate);}
+  .spot h3{font-size:1.15rem;margin-bottom:.15em;}
+  .spot .coord{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:13px;
+    color:var(--steel-2);
+    background:var(--paper-2);
+    display:inline-block;
+    padding:2px 8px;
+    border-radius:3px;
+    margin-bottom:8px;
+  }
+  .spot .tag{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:11px;
+    color:#7A6A55;
+    margin-left:6px;
+  }
+  .spot p{margin:.5em 0;font-size:.98rem;}
+
+  /* DATA TABLE per chapter */
+  table.datatab{
+    width:100%;
+    border-collapse:collapse;
+    margin:28px 0 8px;
+    font-size:.86rem;
+  }
+  table.datatab caption{
+    text-align:left;
+    font-family:'IBM Plex Mono',monospace;
+    font-size:12px;
+    color:var(--slate);
+    margin-bottom:8px;
+  }
+  table.datatab th{
+    text-align:left;
+    font-family:'IBM Plex Mono',monospace;
+    font-weight:500;
+    font-size:11px;
+    text-transform:none;
+    color:#5A6B78;
+    border-bottom:1px solid var(--ink);
+    padding:6px 10px 6px 0;
+  }
+  table.datatab td{
+    padding:9px 10px 9px 0;
+    border-bottom:1px solid var(--line);
+    vertical-align:top;
+  }
+  .tablewrap{overflow-x:auto;}
+
+  /* status pills */
+  .pill{
+    display:inline-block;
+    font-family:'IBM Plex Mono',monospace;
+    font-size:10.5px;
+    padding:1px 6px;
+    border-radius:3px;
+    white-space:nowrap;
+  }
+  .pill.hi{background:#F4E3DA;color:#8A3410;}
+  .pill.mid{background:#DFE6EA;color:#33475B;}
+  .pill.lo{background:#EFE9DC;color:#7A6A55;}
+
+  blockquote{
+    font-family:'Fraunces',serif;
+    font-style:italic;
+    font-size:1.2rem;
+    color:var(--steel-2);
+    border-left:3px solid var(--signal);
+    padding-left:18px;
+    margin:32px 0;
+  }
+
+  hr.div{
+    border:none;
+    border-top:1px solid var(--line);
+    margin:44px 0;
+  }
+
+  /* Section: dark band (methodology) */
+  .band{
+    background:var(--steel);
+    color:#DDE4E8;
+    padding:52px 0;
+    margin-top:60px;
+  }
+  .band h2{color:var(--paper);}
+  .band a{color:#F2A98A;}
+  .band .wrap p{color:#C7D2D8;}
+
+  /* Sources */
+  .sources{padding:52px 0 100px;}
+  .sources h2{font-size:1.6rem;}
+  .sources ul{padding-left:0;list-style:none;}
+  .sources li{
+    padding:10px 0;
+    border-bottom:1px solid var(--line);
+    font-size:.92rem;
+  }
+  .sources .stype{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:10.5px;
+    color:var(--slate);
+    display:block;
+    margin-bottom:2px;
+  }
+  .sources a{word-break:break-all;}
+
+  footer{
+    text-align:center;
+    padding:32px 24px 48px;
+    font-size:12px;
+    color:var(--slate);
+    font-family:'IBM Plex Mono',monospace;
+  }
+
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --paper:#161E25;
+      --paper-2:#1F2933;
+      --ink:#EDEAE1;
+      --line:#33404A;
+      --line-dark:#3C4E5E;
+    }
+    :root:not([data-theme="light"]) .spot .coord{color:#B9C6CE;}
+    :root:not([data-theme="light"]) .chapter .dek{color:#A9B6BE;}
+    :root:not([data-theme="light"]) .pill.hi{background:#3A2A22;color:#E8A484;}
+    :root:not([data-theme="light"]) .pill.mid{background:#233240;color:#AFC2CE;}
+    :root:not([data-theme="light"]) .pill.lo{background:#2B2A22;color:#C9BFA6;}
+    :root:not([data-theme="light"]) table.datatab th{color:#9DAAB4;}
+  }
+  :root[data-theme="dark"]{
+    --paper:#161E25;
+    --paper-2:#1F2933;
+    --ink:#EDEAE1;
+    --line:#33404A;
+    --line-dark:#3C4E5E;
+  }
+
+  @media (max-width:480px){
+    body{font-size:16px;}
+    .hero{padding:64px 20px 48px;}
+  }
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <div class="wrap">
+    <div class="eyebrow">56°16′N–62°38′N &nbsp;·&nbsp; 8°12′E–19°34′E</div>
+    <h1>Kalla vatten</h1>
+    <p class="lede">Ett atlas över kända, halvkända och nästan hemliga vågsurf­spots längs Sveriges kust och Jyllands vestkyst — sammanställt punkt för punkt, källa för källa.</p>
+    <div class="meta">
+      <span>61 namngivna platser</span>
+      <span>2 länder</span>
+      <span>Sammanställt september 2026</span>
+    </div>
+  </div>
+</div>
+
+<div class="wrap intro">
+  <p><span class="drop">D</span>et finns inget Jeffreys Bay här, inget Mundaka. Det som finns är vind. Skandinavien ligger på fel sida om Nordatlanten för att få de långperiodiga grundsvallen som formar Europas kända surfkuster — istället är hela historien en historia om lokalt genererad vind­svall: lågtryck som drar in över Kattegatt, stormar som river upp Nordsjön mot Jyllands rev, eller en enda blåsig eftermiddag som piskar upp Östersjön utanför en pir i Österlen. Det är därför så många av platserna nedan bara "fungerar" ett par dussin dagar om året, och varför de mest hängivna åker hundratals mil för att stå ensamma i en vik ingen turistbroschyr nämner.</p>
+  <p>Det här är ett försök att samla dem — namn för namn, källa för källa, med koordinater där de går att hitta och en ärlig markering där de inte gör det. Danmark, med sitt Cold Hawaii, har den mest utbyggda surfkulturen i Norden och därmed också de mest detaljerat namngivna delspottarna. Sverige är glesare dokumenterat, mer av en skattjakt — men just därför, kanske, mer intressant läsning.</p>
+</div>
+
+<hr class="div">
+
+<!-- ===================== SVERIGE ===================== -->
+
+<div class="wrap chapter">
+  <div class="chapter-head">
+    <h2>I. Halland — Sveriges surfhuvudstad</h2>
+    <span class="range">56.5°N–57.4°N</span>
+  </div>
+  <p class="dek">Den sydvästra Kattegattkusten mellan Göteborg och Malmö är, med god marginal, Sveriges mest utbyggda surfsträcka: sandbottnade beach breaks, ett par points, och en badortskultur som vuxit fram runt vågorna sedan årtionden tillbaka.</p>
+
+  <div class="spot confirmed">
+    <h3>Apelviken <span class="tag">"A-Bay"</span></h3>
+    <div class="coord">57.0940, 12.2360</div>
+    <p>Sveriges mest kända surfvik och något av landets omväxlande surfhuvudstad — en hästskoformad bukt strax söder om Varberg där kite-, wind- och vågsurfare samsas om samma bräckta vatten. Botten är sandig, vänster och höger bryter beroende på swellriktning, och rakt framför Surfers Center, ungefär 200 meter ut, ligger en undervattensklippa som är känd bland lokala surfare — ett riktigt finnhål vid fel tidvatten. Fungerar bäst med sydväst till nordvästlig swell och nordvästlig offshorevind.</p>
+  </div>
+
+  <div class="spot confirmed">
+    <h3>Kåsa</h3>
+    <div class="coord">57.1060, 12.2460</div>
+    <p>Varbergs shortboard-spot, skild från de mjukare longboard-vågorna på övriga stadens stränder. Brantare wedge, halvt ihålig när windswellet får upp fart — den av Varbergs tre huvudspottar som källorna konsekvent pekar ut som "den snabba".</p>
+  </div>
+
+  <div class="spot approx">
+    <h3>Träslövsläge / Läjet</h3>
+    <div class="coord">57.0450, 12.2300 <span class="tag">ca</span></div>
+    <p>Stor, grund vik strax söder om Varberg. Bygger snabbt när det blåser upp, och används lika mycket av kitare som av surfare.</p>
+  </div>
+
+  <div class="spot confirmed">
+    <h3>Åsa <span class="tag">Aasa</span></h3>
+    <div class="coord">57.3530, 12.1280</div>
+    <p>En högervåg över sand blandat med sten, skyddad av en stor pir — vilket också gör den surfbar i förhållanden som skulle vara ohanterliga på en helt öppen strand.</p>
+  </div>
+
+  <div class="spot approx">
+    <h3>Glommen</h3>
+    <div class="coord">56.9070, 12.2930 <span class="tag">ca</span></div>
+    <p>Ett klassiskt Halland-point snarare än en ren beach break — mer strömlinjeformad vågbild när swellet lägger sig rätt mot udden.</p>
+  </div>
+
+  <div class="spot approx">
+    <h3>Mellbystrand</h3>
+    <div class="coord">56.5540, 12.8070 <span class="tag">ca</span></div>
+    <p>Lång sandstrand i Laholmsbukten, fungerar med västlig till nordvästlig swell.</p>
+  </div>
+
+  <div class="spot approx">
+    <h3>Skrea Strand, Falkenberg</h3>
+    <div class="coord">56.8830, 12.4700 <span class="tag">ca</span></div>
+    <p>Populär bad- och kitestrand som ibland levererar surfbara vågor vid rätt västlig vind.</p>
+  </div>
+
+  <div class="tablewrap">
+  <table class="datatab">
+    <caption>Halland — sammanställning</caption>
+    <tr><th>Namn</th><th>Typ</th><th>Bäst vid</th><th>Status</th></tr>
+    <tr><td>Apelviken</td><td>Beach, sand</td><td>SW–NW swell, NW vind</td><td><span class="pill hi">Källbekräftad</span></td></tr>
+    <tr><td>Kåsa</td><td>Beach, sand/sten</td><td>Mycket windswell</td><td><span class="pill hi">Källbekräftad</span></td></tr>
+    <tr><td>Träslövsläge</td><td>Beach/point</td><td>SW</td><td><span class="pill mid">Ort-nivå</span></td></tr>
+    <tr><td>Åsa</td><td>Right, sand/sten</td><td>WSW–SSW</td><td><span class="pill hi">Källbekräftad</span></td></tr>
+    <tr><td>Glommen</td><td>Point break</td><td>SW–W</td><td><span class="pill mid">Ort-nivå</span></td></tr>
+    <tr><td>Mellbystrand</td><td>Beach, sand</td><td>W–NW</td><td><span class="pill mid">Ort-nivå</span></td></tr>
+    <tr><td>Skrea Strand</td><td>Beach</td><td>W–SW</td><td><span class="pill mid">Ort-nivå</span></td></tr>
+  </table>
+  </div>
+</div>
+
+<div class="wrap chapter">
+  <div class="chapter-head">
+    <h2>II. Skåne — reven, hamnarna och Österlen</h2>
+    <span class="range">55.3°N–56.4°N</span>
+  </div>
+  <p class="dek">Där Halland är öppen Kattegattkust är Skåne mer sammansatt: Öresundssidan skyddad av danska Själland, Kullabergs klippiga udde, och Österlens sandiga, östvända Östersjökust. Det är också regionen där lokal kännedom bidragit mest till den här listan.</p>
+
+  <div class="spot confirmed">
+    <h3>Mölle-hamn</h3>
+    <div class="coord">56.2710, 12.4990</div>
+    <p>Vid Kullabergs udde, där vindsvall från Kattegatt böjer runt klipphuvudet in i stenbottnade vikar. Huvudspotet är själva hamnen: man hoppar rakt av från piren och hittar en kraftfull högervåg över ett stenrev. Fungerar bäst med en östlig-sydostlig komponent i vinden, annars mest mush.</p>
+  </div>
+
+  <div class="spot confirmed">
+    <h3>Odd Persson-bay</h3>
+    <div class="coord">56.2720, 12.4970 <span class="tag">ca</span></div>
+    <p>Mölles systerspot, fem minuters promenad bort — samma stenrevsbotten, samma huvudriktning.</p>
+  </div>
+
+  <div class="spot confirmed">
+    <h3>Skäret</h3>
+    <div class="coord">56.271077, 12.596555 <span class="tag">användarbekräftad</span></div>
+    <p>Ett vänsterrev som en tysk windsurf-reporter en gång beskrev som "hade det legat vid en plats med regelbunden swell, hade det här spotet varit världsberömt" — ett jämnt sluttande stenhäll med några lurande block precis under ytan. Exakt läge var länge svårt att slå fast; koordinaten ovan kommer från lokal kännedom.</p>
+  </div>
+
+  <div class="spot confirmed">
+    <h3>Kåseberga</h3>
+    <div class="coord">55.3810, 14.0670</div>
+    <p>Ligger precis vid Ale stenar — Skånes bronsåldersskeppssättning på klipphuvudet ovanför byn — och det är den referensen lokalkännedom oftast använder för att peka ut spotet. Vågen bryter höger över sand vid hamnmuren: "fet" och kraftlös till sin form, vilket gör den ovanligt nybörjarvänlig för att vara ett hamnspot. Ingen localism enligt källorna, och en fiskbutik för varm mat efter surfen.</p>
+  </div>
+
+  <div class="spot confirmed">
+    <h3>Brantevik</h3>
+    <div class="coord">55.5100, 14.1700 <span class="tag">ca</span></div>
+    <p>Ett högerpoint över sand blandat med sten på Österlen, bäst tillgängligt från land när vinden ligger sydsydost till ostnordost.</p>
+  </div>
+
+  <div class="spot approx">
+    <h3>Baskemölla hamn &amp; Vik</h3>
+    <div class="coord">55.4530, 14.2670 <span class="tag">ca, ej egen surfkälla</span></div>
+    <p>Ett pittoreskt fiskeläge på Österlen, med kuststigen norrut till nästa fiskeläge, Vik. Ingen av de källor jag hittat nämner surfförhållandena specifikt här — det är lokalkännedom som fört in dem i listan, och de förtjänar en flagga: geografiskt rimliga, men overifierade som egna brytpunkter.</p>
+  </div>
+
+  <div class="spot confirmed">
+    <h3>Knäbäckshusen</h3>
+    <div class="coord">55.5800, 14.2500 <span class="tag">ca</span></div>
+    <p>En lång sandstrand med grund hylla som trycker in knähöga vågor större delen av vintern, och ibland longboard-dagar även på sommaren. Sällan kraftfullt, men formen håller för den som tar med sig tillräckligt med volym. Känt för sina halmtaksstugor längs stranden.</p>
+  </div>
+
+  <div class="spot approx">
+    <h3>Torekov &amp; Skälderviken</h3>
+    <div class="coord">56.4170, 12.6330 / 56.3500, 12.7500</div>
+    <p>Den norra delen av Skälderviken, mot Torekov, har en klippigare kust och används mest av wing- och wave-windsurfare snarare än renodlade surfare — men källorna beskriver den uttryckligen som "surfbar" vid rätt sydväst- till nordvästvind. Den södra, mer skyddade delen av viken är i praktiken ett nybörjarvatten för wind snarare än en vågsurf-spot.</p>
+  </div>
+
+  <div class="tablewrap">
+  <table class="datatab">
+    <caption>Skåne — sammanställning</caption>
+    <tr><th>Namn</th><th>Typ</th><th>Bäst vid</th><th>Status</th></tr>
+    <tr><td>Mölle-hamn</td><td>Reef, block</td><td>NNW–WNW</td><td><span class="pill hi">Källbekräftad</span></td></tr>
+    <tr><td>Odd Persson-bay</td><td>Reef, block</td><td>NNW–WNW</td><td><span class="pill hi">Källbekräftad</span></td></tr>
+    <tr><td>Skäret</td><td>Reef/point, vänster</td><td>W storm</td><td><span class="pill hi">Användarbekräftad koordinat</span></td></tr>
+    <tr><td>Kåseberga</td><td>Jetty, sand, höger</td><td>S–SE</td><td><span class="pill hi">Källbekräftad</span></td></tr>
+    <tr><td>Brantevik</td><td>Point, sand/sten</td><td>SSE–ENE</td><td><span class="pill hi">Källbekräftad</span></td></tr>
+    <tr><td>Baskemölla / Vik</td><td>Jetty / okänd</td><td>Ospecificerat</td><td><span class="pill lo">Lokalkännedom, ej verifierad</span></td></tr>
+    <tr><td>Knäbäckshusen</td><td>Beach, grund hylla</td><td>Vintersvall</td><td><span class="pill hi">Källbekräftad</span></td></tr>
+    <tr><td>Torekov / Skälderviken</td><td>Point/reef / beach</td><td>SW/NW</td><td><span class="pill mid">Flaggad som wind-spot</span></td></tr>
+  </table>
+  </div>
+</div>
+
+<div class="wrap chapter">
+  <div class="chapter-head">
+    <h2>III. Stockholms skärgård</h2>
+    <span class="range">58.8°N–59.3°N</span>
+  </div>
+  <p class="dek">Öster om huvudstaden öppnar sig skärgården mot Östersjön, och det är här — snarare än på västkusten — landets mest surfade spot i absoluta tal ligger.</p>
+
+  <div class="spot confirmed">
+    <h3>Torö Stenstrand</h3>
+    <div class="coord">58.7970, 17.7800</div>
+    <p>En dryg timme från Stockholms centrum, en lång stenig/grusig strand som vänder sig rakt söderut mot öppna Östersjön. Numera det mest surfade spotet i landet — det var länge en hemlighet men är det inte längre. Vinterstormar med ost- eller sydvind ger halvdecenta A-frames längs hela stranden. Västra delen av viken är bäst exponerad; i östra änden bryter vänstervågor av klipporna, en helt annan våg­karaktär än den öppna sandstranden.</p>
+  </div>
+
+  <div class="spot approx">
+    <h3>Sandhamn</h3>
+    <div class="coord">59.2880, 18.9120 <span class="tag">ca</span></div>
+    <p>Källorna kallar den själva "en chansning" — ett spot som bara vaknar till liv när de allra största lågtrycken drar förbi, men som då kan leverera.</p>
+  </div>
+
+  <div class="tablewrap">
+  <table class="datatab">
+    <caption>Stockholms skärgård — sammanställning</caption>
+    <tr><th>Namn</th><th>Typ</th><th>Bäst vid</th><th>Status</th></tr>
+    <tr><td>Torö Stenstrand (V)</td><td>Beach, block</td><td>Vinterstorm, E/S</td><td><span class="pill hi">Källbekräftad</span></td></tr>
+    <tr><td>Torö Stenstrand (Ö)</td><td>Point-influerad</td><td>E/S</td><td><span class="pill hi">Källbekräftad</span></td></tr>
+    <tr><td>Sandhamn</td><td>Exponerad öppning</td><td>Extrema lågtryck</td><td><span class="pill mid">Ort-nivå</span></td></tr>
+  </table>
+  </div>
+</div>
+
+<div class="wrap chapter">
+  <div class="chapter-head">
+    <h2>IV. Gotland, Fårö &amp; Öland</h2>
+    <span class="range">56.5°N–57.9°N</span>
+  </div>
+  <p class="dek">Öarna mitt i Östersjön kräver en tre timmars färja — och en gång där är kustlinjen så gott som obebyggd av surfkultur, förutom ett fåtal namngivna stränder.</p>
+
+  <div class="spot approx">
+    <h3>Sudersand Strand, Fårö</h3>
+    <div class="coord">57.9450, 19.3430 <span class="tag">ca</span></div>
+    <p>Fårös långa vita sandstrand, på öns mer exponerade östsida.</p>
+  </div>
+
+  <div class="spot approx">
+    <h3>Norsta Aurer, Fårö</h3>
+    <div class="coord">57.9000, 19.3000 <span class="tag">ca</span></div>
+    <p>Halvbra sandbankar och, enligt källorna, ofta fullständigt folktomt.</p>
+  </div>
+
+  <div class="spot lo">
+    <h3>Surflogiet-området</h3>
+    <div class="coord">Läge ej publicerat, östra Gotland</div>
+    <p>En liten glampingbaserad surfanläggning riktad mot nybörjare och longboard, i en skyddad, grund vik. Det exakta läget saknas i den källa jag haft tillgång till.</p>
+  </div>
+
+  <div class="spot confirmed">
+    <h3>Mörbylånga / Haga Park, Öland</h3>
+    <div class="coord">56.5170, 16.3830</div>
+    <p>Den enda dokumenterade "surfing hotspot" jag hittat på Öland — men den är, ärligt talat, en wind- och kitesurfspot snarare än ett vågsurf-spot: flackt vatten i Kalmarsund, känt för en pålitlig havsbris runt klockan ett på eftermiddagarna. Öns östsida, som vetter rakt mot öppna Östersjön, borde rimligen fånga mer swell — men jag har inte hittat en enda namngiven källa för den sträckan. Det är den tydligaste luckan i hela atlaset.</p>
+  </div>
+
+  <div class="tablewrap">
+  <table class="datatab">
+    <caption>Gotland, Fårö &amp; Öland — sammanställning</caption>
+    <tr><th>Namn</th><th>Typ</th><th>Bäst vid</th><th>Status</th></tr>
+    <tr><td>Sudersand Strand</td><td>Beach, sand</td><td>Vinter</td><td><span class="pill mid">Ort-nivå</span></td></tr>
+    <tr><td>Norsta Aurer</td><td>Beach, sandbankar</td><td>Vinter</td><td><span class="pill mid">Ort-nivå</span></td></tr>
+    <tr><td>Surflogiet-området</td><td>Grund vik</td><td>Okänt</td><td><span class="pill lo">Läge ej publicerat</span></td></tr>
+    <tr><td>Mörbylånga / Haga Park</td><td>Flack vik</td><td>Havsbris ~13:00</td><td><span class="pill hi">Källbekräftad — ej vågsurf</span></td></tr>
+  </table>
+  </div>
+</div>
+
+<div class="wrap chapter">
+  <div class="chapter-head">
+    <h2>V. Höga Kusten &amp; Bohuslän</h2>
+    <span class="range">58.3°N–62.6°N</span>
+  </div>
+  <p class="dek">Två motpoler: Bohusläns skyddade skärgård i söder, där ett enda dokumenterat spot kräver båt för att nå, och Höga Kusten i norr, långt bortom vad de flesta skulle gissa är svensk surfmark.</p>
+
+  <div class="spot confirmed">
+    <h3>Smitingen, Härnösand</h3>
+    <div class="coord">62.6300, 17.9900 <span class="tag">ca</span></div>
+    <p>Den nordligaste dokumenterade svenska spot jag hittat — nära utsiktsberget Vårdkasberg, en beach break över sand som fungerar bäst med sydlig till sydostlig swell och sydvind. Lätt tillgänglig, mindre än fem minuter från en badstrand, och enligt källan så gott som aldrig trång.</p>
+  </div>
+
+  <div class="spot approx">
+    <h3>Big Farmers break</h3>
+    <div class="coord">58.35, 11.35 <span class="tag">mycket osäker</span></div>
+    <p>Norra Bohusläns enda dokumenterade spot, och det säger något att det bara nås med båt. Ett kraftfullt block-rev, både vänster och höger, som enligt källan aldrig fryser till på vintern. Källan varnar uttryckligen för tung oljetankertrafik i närheten — en stark fingervisning om läge nära Brofjorden/Lysekil, en av landets få djuphamnar för supertankers, men detta är en gissning från kontext, inte en bekräftad plats.</p>
+  </div>
+
+  <div class="tablewrap">
+  <table class="datatab">
+    <caption>Höga Kusten &amp; Bohuslän — sammanställning</caption>
+    <tr><th>Namn</th><th>Typ</th><th>Bäst vid</th><th>Status</th></tr>
+    <tr><td>Smitingen</td><td>Beach, sand</td><td>S/SE swell, S vind</td><td><span class="pill hi">Källbekräftad</span></td></tr>
+    <tr><td>Big Farmers break</td><td>Reef, block, offshore</td><td>W–SW</td><td><span class="pill lo">Position gissad från kontext</span></td></tr>
+  </table>
+  </div>
+
+  <blockquote>Salusand, Wef och Å-land — tre namn som dyker upp i en spot-databas utan att någon ort anges. Wef beskrivs bara som "Baltic Sea", Å-land riskerar dessutom att förväxlas med de finska Åland­öarna. De får stå kvar som en påminnelse om hur mycket av den svenska kusten som fortfarande är, som en källa uttryckte det, "utforskad men hemlighållen".</blockquote>
+</div>
+
+<hr class="div">
+
+<!-- ===================== DANMARK ===================== -->
+
+<div class="wrap chapter">
+  <div class="chapter-head">
+    <h2>VI. Nordjylland — norr om Cold Hawaii</h2>
+    <span class="range">57.1°N–57.7°N</span>
+  </div>
+  <p class="dek">Innan man når Thys legendariska kuststräcka passerar man Skagen, Vendsyssels öppna stränder och Hirtshals — där en udda lokal kuriositet väntar.</p>
+
+  <div class="spot approx">
+    <h3>Skagen / Grenen</h3>
+    <div class="coord">57.7380, 10.6120 <span class="tag">ca</span></div>
+    <p>Danmarks nordspets, där Skagerrak möter Kattegatt i synligt korsande strömmar. Exponerat, men med farliga underströmmar att respektera.</p>
+  </div>
+
+  <div class="spot approx">
+    <h3>Tversted &amp; Uggerby</h3>
+    <div class="coord">57.5300, 10.2200 / 57.5100, 10.1300</div>
+    <p>Öppna, mindre exploaterade stränder — beskrivna av lokal turistinformation som mer handlar om frihet och avskildhet än om etablerad surfinfrastruktur.</p>
+  </div>
+
+  <div class="spot confirmed">
+    <h3>Hirtshals — tre delspottar</h3>
+    <div class="coord">57.5900–57.6000, 9.9600</div>
+    <p><strong>Husmoderstranden</strong> är den namngivna huvudstranden. <strong>Hamnområdet</strong> ger vågor vid själva molen. Men det verkligt udda inslaget är <strong>"ferry wave"</strong> — vågor som uppstår av färjornas rörelser i hamnbassängen, ett fenomen den lokala turistorganisationen själv kallar "mer en nyfikenhet än ett klassiskt spot". Ett av få ställen i den här listan där vågen orsakas av fartyg snarare än väder.</p>
+  </div>
+
+  <div class="spot confirmed">
+    <h3>Løkken</h3>
+    <div class="coord">57.3650, 9.7160</div>
+    <p>På sommaren mer badort än surfspot, men i stark sydsydväst till västsydvästlig vind absorberar en vågbrytare de mindre vågorna så att bara de större bryter över de yttre sandbankarna. Man paddlar ut norr om muren — ett specifikt, namngivet sätt att undvika den branta "danska" strandbrytningen som annars gör inpaddlingen jobbig.</p>
+  </div>
+
+  <div class="spot approx">
+    <h3>Blokhus &amp; Saltum</h3>
+    <div class="coord">57.2400, 9.5500 / 57.1900, 9.6600</div>
+    <p>Breda, familjevänliga sandstränder som fortsätter i varandra längs Jammerbugten.</p>
+  </div>
+
+  <div class="tablewrap">
+  <table class="datatab">
+    <caption>Nordjylland — sammanställning</caption>
+    <tr><th>Namn</th><th>Typ</th><th>Status</th></tr>
+    <tr><td>Skagen/Grenen</td><td>Beach, sand</td><td><span class="pill mid">Ort-nivå</span></td></tr>
+    <tr><td>Tversted / Uggerby</td><td>Beach</td><td><span class="pill mid">Ort-nivå</span></td></tr>
+    <tr><td>Hirtshals (3 delspottar)</td><td>Beach / jetty / boat-wake</td><td><span class="pill hi">Källbekräftad</span></td></tr>
+    <tr><td>Løkken</td><td>Breakwater/sandbar</td><td><span class="pill hi">Källbekräftad</span></td></tr>
+    <tr><td>Blokhus / Saltum</td><td>Beach</td><td><span class="pill mid">Ort-nivå</span></td></tr>
+  </table>
+  </div>
+</div>
+
+<div class="wrap chapter">
+  <div class="chapter-head">
+    <h2>VII. Cold Hawaii — Thy, Hanstholm till Agger</h2>
+    <span class="range">56.8°N–57.1°N</span>
+  </div>
+  <p class="dek">Namnet myntades på 1990-talet av windsurflegendaren Josh Stone, och området mellan Hanstholm och Agger är i dag Nordeuropas mest utbyggda surfdestination — omkring 30 registrerade spots utmed en enda kuststräcka. Det är också den enda plats i det här atlaset där jag konsekvent hittat officiella, namngivna delspottar inom varje ort.</p>
+
+  <div class="spot confirmed">
+    <h3>Klitmøller — fyra delspottar</h3>
+    <div class="coord">57.0450, 8.4870</div>
+    <p>Cold Hawaiis epicentrum. <strong>Tolderstien</strong>, <strong>Point Perfect</strong> (barnvänlig, mindre våg) och <strong>Revet</strong> (mer utmanande) ligger alla inom samma bukt; <strong>Bunkers</strong>, uppkallad efter andra världskrigets bunkrar på dynerna ovanför, är ett stenrev en bit därifrån. Fyra distinkt olika vågor inom några hundra meter av varandra.</p>
+  </div>
+
+  <div class="spot confirmed">
+    <h3>Nørre Vorupør</h3>
+    <div class="coord">57.0200, 8.4500</div>
+    <p>Två pirar, två vågor: <strong>Lille Mole</strong> ("Little Pier") på insidan, med en surfskola och en nybörjarvänlig vänstervåg; <strong>Store Mole</strong> ("Big Pier") på den mer utmanande sidan. Söder om orten finns en tredje, separat namngiven sektion. Cirka 300 meter norr om piren ligger <strong>Deadmans</strong> — enligt lokal källa förmodligen den kraftfullaste, mest ihåliga vågen i hela Danmark.</p>
+  </div>
+
+  <div class="spot confirmed">
+    <h3>Hanstholm — fyra delspottar</h3>
+    <div class="coord">57.1180, 8.6040</div>
+    <p><strong>Middles</strong>, <strong>Fiskemelen</strong> (namnet kommer troligen från fiskmjölsfabriken i hamnen), <strong>Fakir</strong> och <strong>Fisherman's</strong> — fyra sektioner utmed en kust som är orienterad annorlunda än Klitmøller och Vorupør, vilket ger långa vänstervågor och plats för SUP.</p>
+  </div>
+
+  <div class="spot confirmed">
+    <h3>Bøgsted Rende &amp; Stenbjerg</h3>
+    <div class="coord">57.0100–57.0200, 8.4600–8.5000</div>
+    <p>Mitt i Nationalpark Thy, mer vildvuxet och naturligt än de bättre kända spottarna — här är förhållandena "lite vildare, större och mindre arrangerade", enligt den lokala turistorganisationen.</p>
+  </div>
+
+  <div class="spot confirmed">
+    <h3>Agger — två delspottar</h3>
+    <div class="coord">56.7800, 8.2400</div>
+    <p>Cold Hawaiis sydliga klassiker: <strong>De svarta husen</strong> ("The Black Houses") som landmärke, och en separat namngiven brytpunkt vid en lång pir. Starka strömmar och stort beroende av sandbankarnas form gör Agger till ett spot för de erfarna snarare än nybörjare.</p>
+  </div>
+
+  <div class="tablewrap">
+  <table class="datatab">
+    <caption>Cold Hawaii — sammanställning (16 delspottar)</caption>
+    <tr><th>Ort</th><th>Delspottar</th><th>Nivå</th></tr>
+    <tr><td>Klitmøller</td><td>Tolderstien, Point Perfect, Revet, Bunkers</td><td>Nybörjare–expert</td></tr>
+    <tr><td>Nørre Vorupør</td><td>Lille Mole, Store Mole, sydsidan, Deadmans</td><td>Nybörjare–avancerad</td></tr>
+    <tr><td>Hanstholm</td><td>Middles, Fiskemelen, Fakir, Fisherman's</td><td>Intermediär–expert</td></tr>
+    <tr><td>Bøgsted Rende / Stenbjerg</td><td>—</td><td>Intermediär–avancerad</td></tr>
+    <tr><td>Agger</td><td>De svarta husen, Long Pier</td><td>Intermediär–avancerad</td></tr>
+  </table>
+  </div>
+</div>
+
+<div class="wrap chapter">
+  <div class="chapter-head">
+    <h2>VIII. Vestkysten söderut</h2>
+    <span class="range">56.3°N–56.7°N</span>
+  </div>
+  <p class="dek">Söder om Cold Hawaii tunnas namnen ut, men två orter sticker ut genom sin dubbla karaktär — hav på ena sidan, skyddat fjordvatten på den andra.</p>
+
+  <div class="spot confirmed">
+    <h3>Thyborøn</h3>
+    <div class="coord">56.7000, 8.2200</div>
+    <p>Kanalen mellan Nordsjön och Nissum Fjord skapar en nybörjarvänlig sektion utöver den öppna A-frame-stranden på västsidan — en ort där hav, fjord och kanal ger flera alternativ inom gångavstånd.</p>
+  </div>
+
+  <div class="spot confirmed">
+    <h3>Thorsminde</h3>
+    <div class="coord">56.3700, 8.1200</div>
+    <p>Samma dubbla logik som Thyborøn: råare västkustförhållanden mot Nordsjön, lugnare och säkrare vatten på Nissum Fjord-sidan för nybörjare eller när havet är för mycket.</p>
+  </div>
+
+  <div class="tablewrap">
+  <table class="datatab">
+    <caption>Vestkysten söderut — sammanställning</caption>
+    <tr><th>Namn</th><th>Typ</th><th>Status</th></tr>
+    <tr><td>Thyborøn (hav + kanal)</td><td>Beach A-frame / kanal</td><td><span class="pill hi">Källbekräftad</span></td></tr>
+    <tr><td>Thorsminde (hav + fjord)</td><td>Beach / skyddat vatten</td><td><span class="pill hi">Källbekräftad</span></td></tr>
+  </table>
+  </div>
+</div>
+
+<div class="wrap chapter">
+  <div class="chapter-head">
+    <h2>IX. Bonus: Bornholm</h2>
+    <span class="range">55.0°N</span>
+  </div>
+  <p class="dek">Strikt taget inte Jyllands vestkyst, men en ö mitt i Östersjön mellan Sverige, Polen och Tyskland förtjänar sin plats — särskilt sedan frågan kom upp under research.</p>
+
+  <div class="spot confirmed">
+    <h3>Dueodde</h3>
+    <div class="coord">55.0330, 15.1080</div>
+    <p>Bornholms mest kända strand, med ultrafin sand och flera sandbankar. En av få källor i det här atlaset som uttryckligen listar "surfing" och "body surfing" som aktiviteter snarare än bara vind.</p>
+  </div>
+
+  <div class="spot confirmed">
+    <h3>Balka / "Eastwind"</h3>
+    <div class="coord">55.0430, 15.0870</div>
+    <p>Ett vattensportcenter vid den gamla fiskebyn Snogebæk — men vågorna beskrivs genomgående som "typically low, flat" med energisk vind snarare än surf i klassisk mening.</p>
+  </div>
+</div>
+
+<!-- METHODOLOGY -->
+<div class="band">
+  <div class="wrap">
+    <h2>Om koordinaterna</h2>
+    <p>Ingen surf-specifik databas i Norden publicerar sina brytpunkter med mer än två decimalers precision — cirka en kilometers upplösning. Surf-Forecast.com skriver rentav uttryckligen att vissa positioner medvetet är förskjutna för att skydda spotet. Sandbankar i Nordsjön och Kattegatt flyttar sig dessutom säsong till säsong, vilket gör en decimeterexakt koordinat inaktuell inom ett halvår ändå.</p>
+    <p>Det här atlaset skiljer därför konsekvent mellan tre precisionsnivåer: <strong style="color:#F2A98A">källbekräftad</strong> koordinat eller brytpunktsnamn direkt från en surf-specifik källa, <strong style="color:#AFC2CE">ort-nivå</strong> uppskattning baserad på den namngivna byns eller strandens läge, och enstaka fall av <strong style="color:#C9BFA6">lokalkännedom</strong> som inte kunnat verifieras oberoende. Ingen rad är påhittad för att fylla ut listan — där ett namn saknar lokaliserbar plats (Salusand, Wef, Å-land) står det skrivet ut, hellre än gissat.</p>
+  </div>
+</div>
+
+<!-- SOURCES -->
+<div class="wrap sources">
+  <h2>Källförteckning</h2>
+  <ul>
+    <li><span class="stype">Surf-specifika databaser</span><a href="https://www.spots.guru/fr/by_country/best_surf_spots_in_sweden" target="_blank">spots.guru — Best Surf spots in Sweden</a></li>
+    <li><span class="stype">Surf-specifika databaser</span><a href="https://www.spots.guru/forecast/surf-kaseberga" target="_blank">spots.guru — Kåseberga</a></li>
+    <li><span class="stype">Surf-specifika databaser</span><a href="https://www.spots.guru/forecast/surf-big-farmers-break" target="_blank">spots.guru — Big Farmers break</a></li>
+    <li><span class="stype">Surf-specifika databaser</span><a href="https://www.spots.guru/forecast/surf-smitingen" target="_blank">spots.guru — Smitingen</a></li>
+    <li><span class="stype">Surf-specifika databaser</span><a href="https://surf-forecast.com/breaks/Klitmoller" target="_blank">Surf-Forecast.com — Klitmøller</a></li>
+    <li><span class="stype">Surf-specifika databaser</span><a href="https://www.surf-forecast.com/breaks/Nr-Voruper" target="_blank">Surf-Forecast.com — Nr. Voruper</a></li>
+    <li><span class="stype">Surf-specifika databaser</span><a href="https://www.surf-forecast.com/breaks/Appelviken" target="_blank">Surf-Forecast.com — Appelviken</a></li>
+    <li><span class="stype">Surf-specifika databaser</span><a href="https://www.surf-forecast.com/breaks/Toro" target="_blank">Surf-Forecast.com — Toro</a></li>
+    <li><span class="stype">Surf-specifika databaser</span><a href="https://www.surfnerd.com/surf-reports/sweden" target="_blank">Surfnerd — Sweden</a></li>
+    <li><span class="stype">Surf-specifika databaser</span><a href="https://www.surfnerd.com/surf-reports/sweden/halland-county" target="_blank">Surfnerd — Halland County</a></li>
+    <li><span class="stype">Surf-specifika databaser</span><a href="https://www.surfnerd.com/surf-forecast/klitmoller" target="_blank">Surfnerd — Klitmøller</a></li>
+    <li><span class="stype">Surf-specifika databaser</span><a href="https://www.surfnerd.com/surf-forecast/norre-vorupor" target="_blank">Surfnerd — Nørre Vorupør</a></li>
+    <li><span class="stype">Surf-specifika databaser</span><a href="https://www.surfnerd.com/surf-forecast/hanstholm" target="_blank">Surfnerd — Hanstholm</a></li>
+    <li><span class="stype">Surf-specifika databaser</span><a href="https://breakfinder.surf/countries/denmark" target="_blank">BreakFinder — Denmark</a></li>
+    <li><span class="stype">Surf-researtiklar</span><a href="https://thesurfatlas.com/surfing-in-sweden/" target="_blank">The Surf Atlas — Surfing in Sweden</a></li>
+    <li><span class="stype">Surf-researtiklar</span><a href="https://www.eos.surf/encyclopedia/sweden" target="_blank">Encyclopedia of Surfing — Sweden</a></li>
+    <li><span class="stype">Surf-researtiklar</span><a href="https://www.surf-magazin.de/en/spots-and-areas/international/sweden/spot-guide-sweden-the-best-windsurfing-spots-on-the-west-coast/" target="_blank">Surf Magazin — Spot Guide Sweden (västkusten)</a></li>
+    <li><span class="stype">Surf-researtiklar</span><a href="https://www.surf-magazin.de/en/spots-and-areas/international/sweden/a-windsurfing-trip-to-sweden-s-best-wave-spot/" target="_blank">Surf Magazin — A windsurfing trip to Sweden's best wave spot (Skäret)</a></li>
+    <li><span class="stype">Surf-researtiklar</span><a href="https://www.surf-magazin.de/en/spots-and-areas/international/sweden/spot-guide-southern-sweden-perfect-spots-for-beginners-and-pros-in-skane/" target="_blank">Surf Magazin — Spot Guide Southern Sweden (Skåne)</a></li>
+    <li><span class="stype">Surf-researtiklar</span><a href="https://www.surf-magazin.de/en/spots-and-areas/international/denmark/area-info-cold-hawaii-denmark-all-surf-spots-in-klitmoller-at-a-glance/" target="_blank">Surf Magazin — Cold Hawaii, Klitmøller</a></li>
+    <li><span class="stype">Officiell turistinformation</span><a href="https://www.visit-nordvestkysten.com/inspiration/surfing-northwest-coast" target="_blank">VisitNordvestkysten — Great surf spots at the Northwest Coast</a></li>
+    <li><span class="stype">Officiell turistinformation</span><a href="https://www.visit-nordvestkysten.com/nordvestkysten/klitmoeller-vorupoer" target="_blank">VisitNordvestkysten — Klitmøller &amp; Vorupør</a></li>
+    <li><span class="stype">Officiell turistinformation</span><a href="https://www.naturkartan.se/en/counties/hallands-lan/surfing" target="_blank">Naturkartan — Surfing i Hallands län</a></li>
+    <li><span class="stype">Officiell turistinformation</span><a href="https://sbt.ug.edu.pl/" target="_blank">South Baltic Tourist — Öland, Bornholm, Malmö</a></li>
+    <li><span class="stype">Övrigt</span><a href="https://www.kite-and-windsurfing-guide.com/spots/kiteboarding-windsurfing-sup/lokken-northern-jutland-denmark.html" target="_blank">Kite &amp; Windsurfing Guide — Løkken</a></li>
+    <li><span class="stype">Lokalkännedom</span>Skärets exakta koordinat, Baskemölla hamn och identifieringen av Kåseberga/Ale stenar-området — tillhandahållet direkt av läsaren under research.</li>
+  </ul>
+</div>
+
+<footer>Kalla vatten — ett surfatlas · sammanställt september 2026 · koordinater bör alltid dubbelkollas mot lokala källor innan resa</footer>
+
+</body>
+</html>
