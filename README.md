@@ -1,0 +1,2 @@
+# ColdWaterSurfAtlas
+Surfspots in Scandinavia
